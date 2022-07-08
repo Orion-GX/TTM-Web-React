@@ -1,0 +1,10 @@
+@font-face {
+  font-family: 'Quark-Bold';
+  src: local('Quark-Bold'), url('./fonts/Quark-Bold.otf') format('opentype');
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Quark-Light';
+  src: local('Quark-Light'), url('./fonts/Quark-Light.otf') format('opentype');
+}
