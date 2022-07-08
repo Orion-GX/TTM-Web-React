@@ -1,7 +1,7 @@
 import { Container, Grid } from '@mui/material';
 import { Helmet } from 'react-helmet-async';
 import Footer from 'src/components/Footer';
-import ProfileCover from '../Users/profile/ProfileCover';
+import ProfileCover from '../../../applications/Users/profile/ProfileCover';
 
 function ApplicationContract() {
   return (

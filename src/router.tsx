@@ -39,10 +39,10 @@ const UserSettings = Loader(
 );
 
 const ContractManagement = Loader(
-  lazy(() => import('src/content/applications/Contracts'))
+  lazy(() => import('src/content/pages/Components/Contracts'))
 );
 const EquipmentManagement = Loader(
-  lazy(() => import('src/content/applications/Equipments'))
+  lazy(() => import('src/content/pages/Components/Equipments'))
 );
 
 // Components

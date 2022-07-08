@@ -10,6 +10,7 @@ import App from 'src/App';
 import { SidebarProvider } from 'src/contexts/SidebarContext';
 import * as serviceWorker from 'src/serviceWorker';
 
+
 ReactDOM.render(
   <HelmetProvider>
     <SidebarProvider>

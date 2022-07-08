@@ -1,17 +1,21 @@
 import { Container, Grid, Typography } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Footer from 'src/components/Footer';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import EquipmentPageHeader from './PageHeader';
 import RecentOrders from './RecentOrders';
-import ShowAllEquipment from './ShowAllEquipment';
 
 function EquipmentManagementPage() {
   const [text, setText] = useState('');
   const handleChange = (e) => {
     setText(e.target.value);
   };
+
+  useEffect(() => {
+    // dispatch(equipmentActions.doLoadEquipmentAll('', 10, 0));
+  }, []);
+
   return (
     <>
       <Helmet>

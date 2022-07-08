@@ -8,8 +8,7 @@ import {
 } from '@mui/material';
 
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
-import { TEXT_SYSTEM } from 'src/constants/TextConstant';
-import { COMPONENT_TEXT } from 'src/constants/ComponentConstant';
+import { EQUIPMENT_MANAGEMENT, SEARCH_TEXT } from 'src/constants';
 
 interface EquipmentPageProps {
   handleChange: (params: any) => any;
@@ -30,7 +29,7 @@ function EquipmentPageHeader({ handleChange }: EquipmentPageProps) {
     >
       <Grid item xs={12} lg={12}>
         <Typography variant="h2" component="h2" gutterBottom>
-          {COMPONENT_TEXT.EQUIPMENT_MANAGEMENT}
+          {EQUIPMENT_MANAGEMENT}
         </Typography>
       </Grid>
       <Grid item xs={12} lg={12}>
@@ -48,7 +47,7 @@ function EquipmentPageHeader({ handleChange }: EquipmentPageProps) {
                   '& .MuiInputBase-input': { m: 1, padding: '0px 14px' }
                 }}
                 id="outlined-required"
-                placeholder={TEXT_SYSTEM.SEARCH_TEXT}
+                placeholder={SEARCH_TEXT}
                 onChange={handleChange}
               />
             </Box>
