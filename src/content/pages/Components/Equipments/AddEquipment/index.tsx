@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Card,
   CardContent,
   CardHeader,
@@ -10,23 +11,39 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  SelectChangeEvent,
+  TextareaAutosize,
   TextField,
   Typography
 } from '@mui/material';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Footer from 'src/components/Footer';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import {
+  ADDRESS_TEXT,
+  CITIZEN_TEXT,
+  COMFIRM_BUTTON_TEXT,
   DESCRIPTION_TEXT,
   EQUIPMENT_ADD,
   EQUIPMENT_LIST_TITLE_TEXT,
   EQUIPMENT_MANAGEMENT,
+  GENDER_TEXT,
+  NAME_TEXT,
   PASSWORD_TEXT,
+  PHONE_TEXT,
+  SALARY_TEXT,
   STATUS_TEXT,
   USERNAME_TEXT
 } from 'src/constants';
 
 function AddEquipment(params: any) {
+  const [gender, setGender] = useState('');
+
+  const handleGenderChange = (e: SelectChangeEvent) => {
+    setGender(e.target.value);
+  };
+
   return (
     <>
       <Helmet>
@@ -57,182 +74,179 @@ function AddEquipment(params: any) {
         >
           <Grid item xs={12}>
             <Card>
-              <CardHeader title={DESCRIPTION_TEXT} />
+              <CardHeader
+                style={{ backgroundColor: '#F9FAFC', fontSize: '19px' }}
+                title={DESCRIPTION_TEXT}
+              />
               <Divider />
-              <CardContent>
-                <Box
-                  component="form"
-                  sx={{
-                    '& .MuiTextField-root': { m: 1, width: '25ch' }
-                  }}
-                  noValidate
-                  autoComplete="off"
-                >
+              <CardContent style={{}}>
+                <Box component="form" noValidate autoComplete="off">
                   <div>
-                    <FormControl>
-                      <TextField
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="stretch"
+                    >
+                      <Grid
+                        paddingX="10px"
+                        marginTop="10px"
+                        xs={12}
+                        sm={7}
+                        md={7}
+                        lg={7}
+                      >
+                        <TextField
+                          required
+                          fullWidth
+                          id="name"
+                          label={NAME_TEXT}
+                        />
+                      </Grid>
+                      <Grid
+                        paddingX="10px"
+                        marginTop="10px"
+                        xs={12}
+                        sm={5}
+                        md={5}
+                        lg={5}
+                      >
+                        <TextField
+                          required
+                          fullWidth
+                          id="citizen"
+                          label={CITIZEN_TEXT}
+                        />
+                      </Grid>
+                    </Grid>
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="start"
+                      alignItems="stretch"
+                      marginTop="20px"
+                    >
+                      <Grid
+                        paddingX="10px"
+                        marginTop="10px"
+                        xs={12}
+                        sm={6}
+                        md={3}
+                        lg={3}
+                      >
+                        <FormControl fullWidth>
+                          <InputLabel id="gender">{GENDER_TEXT}</InputLabel>
+                          <Select
+                            required
+                            labelId="gender-label"
+                            id="gender-select"
+                            value={gender}
+                            defaultValue={GENDER_TEXT}
+                            label="gender"
+                            onChange={handleGenderChange}
+                          >
+                            <MenuItem style={{ fontSize: '17px' }} value={''}>
+                              กรุณาเลือกเพศ
+                            </MenuItem>
+                            <MenuItem
+                              style={{ fontSize: '17px' }}
+                              value={'ชาย'}
+                            >
+                              ชาย
+                            </MenuItem>
+                            <MenuItem
+                              style={{ fontSize: '17px' }}
+                              value={'หญิง'}
+                            >
+                              หญิง
+                            </MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid
+                        paddingX="10px"
+                        marginTop="10px"
+                        xs={12}
+                        sm={6}
+                        md={4}
+                        lg={4}
+                      >
+                        <TextField
+                          required
+                          fullWidth
+                          id="outlined-required"
+                          label={PHONE_TEXT}
+                        />
+                      </Grid>
+                      <Grid
+                        paddingX="10px"
+                        marginTop="10px"
+                        xs={12}
+                        sm={6}
+                        md={5}
+                        lg={5}
+                      >
+                        <TextField
+                          fullWidth
+                          id="outlined-required"
+                          label={SALARY_TEXT}
+                        />
+                      </Grid>
+                    </Grid>
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="start"
+                      alignItems="stretch"
+                      marginTop="20px"
+                    >
+                      <Grid
+                        paddingX="10px"
+                        marginTop="10px"
+                        xs={12}
+                        sm={12}
+                        md={12}
+                        lg={12}
+                      >
+                        <TextField
+                          fullWidth
+                          multiline
+                          id="outlined-required"
+                          label={ADDRESS_TEXT}
+                          InputProps={{
+                            rows: 3
+                          }}
+                        />
+                      </Grid>
+                    </Grid>
+                  </div>
+                </Box>
+                <Box>
+                  <Grid
+                    container
+                    direction="row"
+                    justifyContent="end"
+                    alignItems="stretch"
+                    marginTop="20px"
+                  >
+                    <Grid
+                      paddingX="10px"
+                      marginTop="10px"
+                      xs={12}
+                      sm={12}
+                      md={2}
+                      lg={2}
+                    >
+                      <Button
                         fullWidth
-                        id="outlined-required"
-                        label={USERNAME_TEXT}
-                      />
-                      <TextField
-                        fullWidth
-                        id="outlined-required"
-                        label={PASSWORD_TEXT}
-                      />
-                    </FormControl>
-                    <TextField
-                      fullWidth
-                      id="outlined-required"
-                      label={USERNAME_TEXT}
-                    />
-                    <TextField
-                      disabled
-                      id="outlined-required"
-                      label={PASSWORD_TEXT}
-                    />
-                    <TextField
-                      id="outlined-password-input"
-                      label="Password"
-                      type="password"
-                      autoComplete="current-password"
-                    />
-                    <TextField
-                      id="outlined-read-only-input"
-                      label="Read Only"
-                      defaultValue="Hello World"
-                      InputProps={{
-                        readOnly: true
-                      }}
-                    />
-                    <TextField
-                      id="outlined-number"
-                      label="Number"
-                      type="number"
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                    />
-                    <TextField
-                      id="outlined-search"
-                      label="Search field"
-                      type="search"
-                    />
-                    <TextField
-                      id="outlined-helperText"
-                      label="Helper text"
-                      defaultValue="Default Value"
-                      helperText="Some important text"
-                    />
-                  </div>
-                  <div>
-                    <TextField
-                      required
-                      id="filled-required"
-                      label="Required"
-                      defaultValue="Hello World"
-                      variant="filled"
-                    />
-                    <TextField
-                      disabled
-                      id="filled-disabled"
-                      label="Disabled"
-                      defaultValue="Hello World"
-                      variant="filled"
-                    />
-                    <TextField
-                      id="filled-password-input"
-                      label="Password"
-                      type="password"
-                      autoComplete="current-password"
-                      variant="filled"
-                    />
-                    <TextField
-                      id="filled-read-only-input"
-                      label="Read Only"
-                      defaultValue="Hello World"
-                      InputProps={{
-                        readOnly: true
-                      }}
-                      variant="filled"
-                    />
-                    <TextField
-                      id="filled-number"
-                      label="Number"
-                      type="number"
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      variant="filled"
-                    />
-                    <TextField
-                      id="filled-search"
-                      label="Search field"
-                      type="search"
-                      variant="filled"
-                    />
-                    <TextField
-                      id="filled-helperText"
-                      label="Helper text"
-                      defaultValue="Default Value"
-                      helperText="Some important text"
-                      variant="filled"
-                    />
-                  </div>
-                  <div>
-                    <TextField
-                      required
-                      id="standard-required"
-                      label="Required"
-                      defaultValue="Hello World"
-                      variant="standard"
-                    />
-                    <TextField
-                      disabled
-                      id="standard-disabled"
-                      label="Disabled"
-                      defaultValue="Hello World"
-                      variant="standard"
-                    />
-                    <TextField
-                      id="standard-password-input"
-                      label="Password"
-                      type="password"
-                      autoComplete="current-password"
-                      variant="standard"
-                    />
-                    <TextField
-                      id="standard-read-only-input"
-                      label="Read Only"
-                      defaultValue="Hello World"
-                      InputProps={{
-                        readOnly: true
-                      }}
-                      variant="standard"
-                    />
-                    <TextField
-                      id="standard-number"
-                      label="Number"
-                      type="number"
-                      InputLabelProps={{
-                        shrink: true
-                      }}
-                      variant="standard"
-                    />
-                    <TextField
-                      id="standard-search"
-                      label="Search field"
-                      type="search"
-                      variant="standard"
-                    />
-                    <TextField
-                      id="standard-helperText"
-                      label="Helper text"
-                      defaultValue="Default Value"
-                      helperText="Some important text"
-                      variant="standard"
-                    />
-                  </div>
+                        variant="contained"
+                        style={{ fontSize: '20px' }}
+                        color="info"
+                      >
+                        {COMFIRM_BUTTON_TEXT}
+                      </Button>
+                    </Grid>
+                  </Grid>
                 </Box>
               </CardContent>
             </Card>
