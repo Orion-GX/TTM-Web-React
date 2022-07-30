@@ -12,9 +12,10 @@ import { EQUIPMENT_MANAGEMENT, SEARCH_TEXT } from 'src/constants';
 
 interface EquipmentPageProps {
   handleChange: (params: any) => any;
+  onSearch?: () => any;
 }
 
-function EquipmentPageHeader({ handleChange }: EquipmentPageProps) {
+function EquipmentPageHeader({ handleChange, onSearch }: EquipmentPageProps) {
   const user = {
     name: 'Catherine Pike',
     avatar: '/static/images/avatars/1.jpg'
@@ -52,7 +53,20 @@ function EquipmentPageHeader({ handleChange }: EquipmentPageProps) {
               />
             </Box>
           </Grid>
-          <Grid item xs={3} md={3} lg={3}>
+          <Grid item xs={2} md={2} lg={2}>
+            <Box style={{ paddingLeft: '10px', paddingRight: '10px' }}>
+              <Button
+                fullWidth
+                variant="contained"
+                color="success"
+                style={{ fontSize: '18px' }}
+                onClick={onSearch}
+              >
+                {SEARCH_TEXT}
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={3} md={3} lg={2}>
             <Button
               fullWidth
               sx={{ mt: { xs: 2, md: 0 } }}

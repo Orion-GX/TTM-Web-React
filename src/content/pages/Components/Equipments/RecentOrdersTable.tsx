@@ -30,7 +30,8 @@ import {
   OPTION_DELETE,
   OPTION_EDIT,
   STATUS_SEARCH,
-  STATUS_TEXT
+  STATUS_TEXT,
+  STATUS_TEXT_LIST
 } from 'src/constants';
 import { IEquipmentResponseList } from 'src/models/response/equipmentResponseList';
 import { IEquipmentResult } from 'src/models/result/equipmentResult';
@@ -38,23 +39,38 @@ import { IEquipmentTableProps } from 'src/props/equipmentProps';
 import axios from 'axios';
 import { apiUrl, server } from 'src/constants/config';
 
-const getStatusLabel = (cryptoOrderStatus: CryptoOrderStatus): JSX.Element => {
-  const map = {
-    failed: {
-      text: 'Failed',
-      color: 'error'
-    },
-    completed: {
-      text: 'Completed',
-      color: 'success'
-    },
-    pending: {
-      text: 'Pending',
-      color: 'warning'
-    }
-  };
+const getStatusLabel = (textStatus: string): JSX.Element => {
+  let map = {};
+  console.log(textStatus);
 
-  const { text, color }: any = map[cryptoOrderStatus];
+  switch (textStatus) {
+    case 'ACTIVE':
+      map = {
+        text: STATUS_TEXT_LIST.ACTIVE.name,
+        color: 'success'
+      };
+      break;
+    case 'PENDING':
+      map = {
+        text: STATUS_TEXT_LIST.PENDING.name,
+        color: 'success'
+      };
+      break;
+    case 'SUSPENDED':
+      map = {
+        text: STATUS_TEXT_LIST.SUSPENDED.name,
+        color: 'error'
+      };
+      break;
+    default:
+      map = {
+        text: STATUS_TEXT_LIST.ACTIVE.name,
+        color: 'success'
+      };
+      break;
+  }
+
+  const { text, color }: any = map;
 
   return <Label color={color}>{text}</Label>;
 };
@@ -74,19 +90,23 @@ const RecentOrdersTable = (props: IEquipmentTableProps) => {
   const handleStatusChange = (e: ChangeEvent<HTMLInputElement>): void => {
     for (let i = 0; i < statusOptions.length; i++) {
       const element = statusOptions[i];
+      // console.log(element);
 
       if (element.id == e.target.value) {
         setFilters(element.id);
-        getEquipment(e.target.value);
+        props.handleStatus(element.id);
+        // getEquipment(e.target.value);
       }
     }
   };
 
   const handlePageChange = (event: any, newPage: number): void => {
+    props.handlePageChange(newPage);
     setPage(newPage);
   };
 
   const handleLimitChange = (event: ChangeEvent<HTMLInputElement>): void => {
+    props.handleLimitChange(parseInt(event.target.value));
     setLimit(parseInt(event.target.value));
   };
 
@@ -107,10 +127,10 @@ const RecentOrdersTable = (props: IEquipmentTableProps) => {
       .then((res) => {
         if (res.status == 200) {
           const test: IEquipmentResponseList = res.data;
-          setItemList(test.result);
+          setItemList(test.result.content);
         } else {
           const test: IEquipmentResponseList = res.data;
-          setItemList(test.result);
+          setItemList(test.result.content);
         }
       })
       .catch((err) => {
@@ -170,8 +190,8 @@ const RecentOrdersTable = (props: IEquipmentTableProps) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {itemList ? (
-              itemList.map((item, index) => {
+            {props.equipments.result.content.length != 0 ? (
+              props.equipments.result.content?.map((item: IEquipmentResult, index) => {
                 return (
                   <TableRow hover key={index}>
                     <TableCell>
@@ -179,6 +199,7 @@ const RecentOrdersTable = (props: IEquipmentTableProps) => {
                         variant="body1"
                         fontWeight="bold"
                         color="text.primary"
+                        fontSize="18px"
                         gutterBottom
                         noWrap
                       >
@@ -193,6 +214,7 @@ const RecentOrdersTable = (props: IEquipmentTableProps) => {
                         variant="body1"
                         fontWeight="bold"
                         color="text.primary"
+                        fontSize="18px"
                         gutterBottom
                         noWrap
                       >
@@ -204,17 +226,18 @@ const RecentOrdersTable = (props: IEquipmentTableProps) => {
                         variant="body1"
                         fontWeight="bold"
                         color="text.primary"
+                        fontSize="18px"
                         gutterBottom
                         noWrap
                       >
-                        {item.equipment_amount}  {item.equipment_type} 
+                        {item.equipment_amount} {item.equipment_type}
                       </Typography>
                       {/* <Typography variant="body2" color="text.secondary" noWrap>
                       {numeral(item.amount).format(`${item.currency}0,0.00`)}
                     </Typography> */}
                     </TableCell>
                     <TableCell align="right">
-                      {/* {getStatusLabel(item.status)} */}
+                      {getStatusLabel(item.equipment_status)}
                     </TableCell>
                     <TableCell align="right">
                       <Tooltip title={OPTION_EDIT} arrow>

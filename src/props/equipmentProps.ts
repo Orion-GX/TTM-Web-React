@@ -3,9 +3,11 @@ import { IEquipmentResponseList } from "src/models/response/equipmentResponseLis
 
 export interface IEquipmentTableProps {
     className?: string;
-    equipments?: IEquipmentResponseList | null;
+    equipments?: IEquipmentResponseList;
     search?: string | null;
     setStatus?: Dispatch<SetStateAction<string>>
     status?: string | null;
-    searchFunc?: () => void;
+    handleStatus?: (e: any) => any;
+    handlePageChange?: (e: any) => any;
+    handleLimitChange?: (e: any) => any;
 }

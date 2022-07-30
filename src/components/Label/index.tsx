@@ -19,7 +19,7 @@ const LabelWrapper = styled('span')(
   ({ theme }) => `
       background-color: ${theme.colors.alpha.black[5]};
       padding: ${theme.spacing(0.5, 1)};
-      font-size: ${theme.typography.pxToRem(13)};
+      font-size: ${theme.typography.pxToRem(15)};
       border-radius: ${theme.general.borderRadius};
       display: inline-flex;
       align-items: center;

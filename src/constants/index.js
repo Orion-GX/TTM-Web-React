@@ -39,6 +39,28 @@ export const STATUS_SEARCH = [
     name: 'ปิดใช้งาน'
   }
 ];
+export const STATUS_TEXT_LIST = {
+  ALL: {
+    id: 'ALL',
+    name: 'ทั้งหมด'
+  },
+  ACTIVE: {
+    id: 'ACTIVE',
+    name: 'ใช้งาน'
+  },
+  PENDING: {
+    id: 'PENDING',
+    name: 'รออนุมัติ'
+  },
+  SUSPENDED: {
+    id: 'SUSPENDED',
+    name: 'ปิดใช้งานชั่วคราว'
+  },
+  TERMINATED: {
+    id: 'TERMINATED',
+    name: 'ปิดใช้งาน'
+  }
+};
 
 export const ENABLE_STATUS = [
   {
