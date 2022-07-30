@@ -9,6 +9,7 @@ import {
 
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 import { EQUIPMENT_MANAGEMENT, SEARCH_TEXT } from 'src/constants';
+import { NavLink as RouterLink } from 'react-router-dom';
 
 interface EquipmentPageProps {
   handleChange: (params: any) => any;
@@ -69,6 +70,8 @@ function EquipmentPageHeader({ handleChange, onSearch }: EquipmentPageProps) {
           <Grid item xs={3} md={3} lg={2}>
             <Button
               fullWidth
+              component={RouterLink}
+              to="/equipment/add"
               sx={{ mt: { xs: 2, md: 0 } }}
               variant="contained"
               style={{ fontSize: '18px' }}

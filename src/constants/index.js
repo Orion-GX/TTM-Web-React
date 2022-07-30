@@ -1,4 +1,5 @@
 export const EQUIPMENT_MANAGEMENT = 'จัดการอุปกรณ์';
+export const EQUIPMENT_ADD = 'เพิ่มอุปกรณ์';
 export const CONTRACT_MANAGEMENT = 'จัดการสัญญา';
 
 // Footer
@@ -14,6 +15,7 @@ export const SEARCH_TEXT = 'ค้นหา';
 export const OPTION_EDIT = 'แก้ไขรายการ';
 export const OPTION_DELETE = 'ลบรายการ';
 export const STATUS_TEXT = 'สถานะ';
+export const DESCRIPTION_TEXT = 'รายละเอียด';
 export const EQUIPMENT_LIST_TITLE_TEXT = 'รายการอุปกรณ์';
 
 // Status

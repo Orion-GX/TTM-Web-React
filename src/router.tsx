@@ -38,11 +38,15 @@ const UserSettings = Loader(
   lazy(() => import('src/content/applications/Users/settings'))
 );
 
+// Pages in app
 const ContractManagement = Loader(
   lazy(() => import('src/content/pages/Components/Contracts'))
 );
 const EquipmentManagement = Loader(
   lazy(() => import('src/content/pages/Components/Equipments'))
+);
+const AddEquipment = Loader(
+  lazy(() => import('src/content/pages/Components/Equipments/AddEquipment'))
 );
 
 // Components
@@ -163,6 +167,10 @@ const routes: RouteObject[] = [
       {
         path: '',
         element: <EquipmentManagement />
+      },
+      {
+        path: 'add',
+        element: <AddEquipment />
       }
     ]
   },

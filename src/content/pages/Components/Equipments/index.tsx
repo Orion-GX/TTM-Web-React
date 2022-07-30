@@ -29,9 +29,7 @@ import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import { apiUrl, server } from 'src/constants/config';
 import { IEquipmentResponseList } from 'src/models/response/equipmentResponseList';
 import EquipmentPageHeader from './PageHeader';
-import RecentOrders from './RecentOrders';
 import debouce from 'lodash.debounce';
-import RecentOrdersTable from './RecentOrdersTable';
 import Label from 'src/components/Label';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
@@ -185,22 +183,7 @@ function EquipmentManagementPage() {
           spacing={3}
         >
           <Grid item xs={12}>
-            {/* <RecentOrders
-              handleStatus={handleStatusChange}
-              equipments={equipmentData}
-              setStatus={setStatus}
-              status={status}
-              search={search}
-            /> */}
             <Card>
-              {/* <RecentOrdersTable
-                equipments={equipmentData}
-                search={search}
-                status={status}
-                handlePageChange={handlePageChange}
-                handleLimitChange={handleLimitChange}
-                handleStatus={handleStatusChange}
-              /> */}
               <Card>
                 <CardHeader
                   action={
