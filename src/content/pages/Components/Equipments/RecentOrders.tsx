@@ -2,8 +2,10 @@ import { Card } from '@mui/material';
 import { CryptoOrder } from 'src/models/crypto_order';
 import RecentOrdersTable from './RecentOrdersTable';
 import { subDays } from 'date-fns';
+import { IEquipmentResponseList } from 'src/models/response/equipmentResponseList';
+import { IEquipmentTableProps } from 'src/props/equipmentProps';
 
-function RecentOrders() {
+function RecentOrders(props: IEquipmentTableProps) {
   const cryptoOrders: CryptoOrder[] = [
     {
       id: '1',
@@ -139,7 +141,14 @@ function RecentOrders() {
 
   return (
     <Card>
-      <RecentOrdersTable cryptoOrders={cryptoOrders} />
+      <RecentOrdersTable
+        equipments={null}
+        search={null}
+        status={''}
+        searchFunc={function (): void {
+          throw new Error('Function not implemented.');
+        }}
+      />
     </Card>
   );
 }

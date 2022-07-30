@@ -475,7 +475,7 @@ export const PureLightTheme = createTheme({
           marginBottom: -5
         },
         title: {
-          fontSize: 15
+          fontSize: 18
         }
       }
     },
@@ -982,7 +982,7 @@ export const PureLightTheme = createTheme({
         },
         head: {
           textTransform: 'uppercase',
-          fontSize: 13,
+          fontSize: 18,
           fontWeight: 'bold',
           color: colors.alpha.black[70]
         }
@@ -1055,7 +1055,7 @@ export const PureLightTheme = createTheme({
         tooltip: {
           backgroundColor: alpha(colors.alpha.black['100'], 0.95),
           padding: '8px 16px',
-          fontSize: 13
+          fontSize: 15,
         },
         arrow: {
           color: alpha(colors.alpha.black['100'], 0.95)

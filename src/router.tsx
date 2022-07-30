@@ -153,7 +153,7 @@ const routes: RouteObject[] = [
       {
         path: '',
         element: <ContractManagement />
-      },
+      }
     ]
   },
   {
@@ -163,7 +163,7 @@ const routes: RouteObject[] = [
       {
         path: '',
         element: <EquipmentManagement />
-      },
+      }
     ]
   },
   {

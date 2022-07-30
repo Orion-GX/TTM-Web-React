@@ -1,19 +1,45 @@
 import { Container, Grid, Typography } from '@mui/material';
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Footer from 'src/components/Footer';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
+import { apiUrl, server } from 'src/constants/config';
+import { IEquipmentResponseList } from 'src/models/response/equipmentResponseList';
 import EquipmentPageHeader from './PageHeader';
 import RecentOrders from './RecentOrders';
 
 function EquipmentManagementPage() {
   const [text, setText] = useState('');
+  const [search, setSearch] = useState('');
+  const [status, setStatus] = useState('');
+  const [equipmentData, setEquipmentData] = useState<IEquipmentResponseList>();
   const handleChange = (e) => {
     setText(e.target.value);
   };
 
+  const getEquipment = async () => {
+    await axios
+      .post(apiUrl + server.EQUIPMENT_SEARCH, {
+        search: search,
+        status: status
+      })
+      .then((res) => {
+        if (res.status == 200) {
+          const test: IEquipmentResponseList = res.data;
+          setEquipmentData(test);
+        } else {
+          const test: IEquipmentResponseList = res.data;
+          setEquipmentData(test);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  };
+
   useEffect(() => {
-    // dispatch(equipmentActions.doLoadEquipmentAll('', 10, 0));
+    // getEquipment();
   }, []);
 
   return (
@@ -33,7 +59,7 @@ function EquipmentManagementPage() {
           spacing={3}
         >
           <Grid item xs={12}>
-            <RecentOrders />
+            <RecentOrders equipments={equipmentData} setStatus={setStatus} status={status} search={search}  />
           </Grid>
         </Grid>
       </Container>

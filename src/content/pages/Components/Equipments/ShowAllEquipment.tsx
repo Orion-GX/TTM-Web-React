@@ -18,7 +18,14 @@ function ShowAllEquipment() {
         <Divider />
         <Box p={2}>
           <Grid container spacing={0}>
-            <RecentOrders />
+            <RecentOrders
+              equipments={null}
+              search={null}
+              status={''}
+              searchFunc={function (): void {
+                throw new Error('Function not implemented.');
+              }}
+            />
           </Grid>
         </Box>
       </Card>

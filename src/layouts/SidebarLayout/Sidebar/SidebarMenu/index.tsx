@@ -31,7 +31,7 @@ import ChromeReaderModeTwoToneIcon from '@mui/icons-material/ChromeReaderModeTwo
 import WorkspacePremiumTwoToneIcon from '@mui/icons-material/WorkspacePremiumTwoTone';
 import CameraFrontTwoToneIcon from '@mui/icons-material/CameraFrontTwoTone';
 import DisplaySettingsTwoToneIcon from '@mui/icons-material/DisplaySettingsTwoTone';
-import { COMPONENT_TEXT } from '../../../../constants/ComponentConstant';
+import { COMPONENT_TEXT } from 'src/constants/ComponentConstant';
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -196,6 +196,23 @@ function SidebarMenu() {
                   Overview
                 </Button>
               </ListItem>
+            </List>
+          </SubMenuWrapper>
+        </List>
+        <List component="div">
+          <SubMenuWrapper>
+            <List component="div">
+              <ListItem component="div">
+                <Button
+                  disableRipple
+                  component={RouterLink}
+                  onClick={closeSidebar}
+                  to="/overview"
+                  startIcon={<DesignServicesTwoToneIcon />}
+                >
+                  Overview
+                </Button>
+              </ListItem>
               <ListItem component="div">
                 <Button
                   disableRipple
@@ -221,7 +238,6 @@ function SidebarMenu() {
             </List>
           </SubMenuWrapper>
         </List>
-        {/**************************************************************************************************** */}
         <List
           component="div"
           subheader={
