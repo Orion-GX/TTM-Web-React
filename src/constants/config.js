@@ -12,6 +12,8 @@ export const server = {
   LOGIN_URL: `/auth/sign_in`,
   EQUIPMENT_SEARCH: `/equipment/search`,
   EQUIPMENT_DETAIL: `/equipment/`,
+  EQUIPMENT_ADD: `/equipment/add`,
+  EQUIPMENT_TYPE: `/equipment/type`,
 
   REPORT_URL: `report`,
   TOKEN_KEY: `token`,

@@ -5,11 +5,13 @@ import {
   CardContent,
   CardHeader,
   CardMedia,
+  CircularProgress,
   Container,
   Divider,
   FormControl,
   Grid,
   InputLabel,
+  LinearProgress,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -42,7 +44,15 @@ import {
   USERNAME_TEXT
 } from 'src/constants';
 import UploadTwoToneIcon from '@mui/icons-material/UploadTwoTone';
-import validator from 'validator';
+import axios from 'axios';
+import { apiUrl, server } from 'src/constants/config';
+import { IEquipmentResponseList } from 'src/models/response/equipmentResponseList';
+import { IEquipmentTypeResponse } from 'src/models/response/equipmentTypeResponse';
+import { IEquipmentResult } from 'src/models/result/equipmentResult';
+import Loading from 'src/components/Loading';
+import { validateFileSize } from 'src/utils/commonUtil';
+import LoadingBackdrop from 'src/components/LoadingBackDrop';
+import SnackbarNotify from 'src/components/SnackBarNotify';
 
 const CardCover = styled(Card)(
   ({ theme }) => `
@@ -74,17 +84,29 @@ function AddEquipment() {
   const [amountError, setAmountError] = useState(false);
   const [type, setType] = useState('');
   const [typeError, setTypeError] = useState(false);
+  const [typeList, setTypeList] = useState<IEquipmentResult[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [snackbar, setSnackbar] = useState(false);
+  const [snackBarType, setSnackBarType] = useState('success');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const validateData = () => {
-    if (validator.isEmpty(name)) {
+    let check = false;
+    if (!name) {
       setNameError(true);
+      check = true;
     } else {
       setNameError(false);
     }
-    if (!validator.isNumeric(amount)) {
+    if (!amount) {
+      check = true;
       setAmountError(true);
     } else {
       setAmountError(false);
+    }
+    if (!check) {
+      setLoading(true);
+      addEquipment();
     }
   };
 
@@ -93,17 +115,101 @@ function AddEquipment() {
   //     setImageUrl(URL.createObjectURL(imageUrl));
   //   }
   // }, [imageUrl]);
+  const handleChangeSnackBar = () => {
+    setSnackbar(!snackbar);
+  };
+  const handleChangeLoading = () => {
+    setLoading(!loading);
+  };
 
   const handleChangeImage = (e) => {
     const [file] = e.target.files;
-    setImageUrl(URL.createObjectURL(file));
+    if (file) {
+      if (!validateFileSize(file.size)) {
+      }
+      console.log(file);
+
+      setImageUrl(URL.createObjectURL(file));
+    }
   };
+
+  const addEquipment = async () => {
+    let type_id = typeList.find((e) => e.equipment_name == type);
+    let data = {
+      name: name,
+      amount: amount,
+      image: null,
+      type_id: type_id ? type_id.equipment_id : null
+    };
+    // setTimeout(() => {
+    //   setLoading(false);
+    //   setSnackBarType('error');
+    //   setSnackbar(true);
+    //   setErrorMessage('Welcome to thailand');
+    // }, 3000);
+
+    await axios({
+      method: 'post',
+      timeout: 1000 * 10,
+      url: apiUrl + server.EQUIPMENT_ADD,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    })
+      .then((res) => {
+        setLoading(false);
+        if (res.status == 200) {
+          setSnackBarType('success');
+          setSnackbar(true);
+          setErrorMessage('บันทึกข้อมูลสำเร็จ');
+          history.back();
+        } else {
+          setSnackBarType('error');
+          setSnackbar(true);
+          setErrorMessage('เกิดข้อผิดพลาด กรุณาตรวจข้อมูล');
+        }
+      })
+      .catch((err) => {
+        setSnackBarType('error');
+        setSnackbar(true);
+        setErrorMessage('เกิดข้อผิดพลาด กรุณาตรวจข้อมูล');
+      });
+  };
+
+  const getEquipmentType = async () => {
+    await axios
+      .get(apiUrl + server.EQUIPMENT_TYPE)
+      .then((res) => {
+        if (res.status == 200) {
+          const resultData: IEquipmentTypeResponse = res.data;
+          setTypeList(resultData.result);
+        } else {
+          const test: IEquipmentTypeResponse = res.data;
+          setTypeList(test.result);
+        }
+      })
+      .catch((err) => {
+        alert(err);
+      });
+  };
+
+  useEffect(() => {
+    getEquipmentType();
+  }, []);
 
   return (
     <>
       <Helmet>
         <title>Equipment - Management</title>
       </Helmet>
+      <SnackbarNotify
+        message={errorMessage}
+        type={snackBarType}
+        open={snackbar}
+        handleChange={handleChangeSnackBar}
+      />
+      <LoadingBackdrop loading={loading} handleChange={handleChangeLoading} />
       <PageTitleWrapper>
         <Grid
           container
@@ -174,6 +280,7 @@ function AddEquipment() {
                       alignItems="stretch"
                     >
                       <Grid
+                        item
                         paddingX="10px"
                         marginTop="10px"
                         xs={12}
@@ -207,6 +314,7 @@ function AddEquipment() {
                       </Grid>
 
                       <Grid
+                        item
                         paddingX="10px"
                         marginTop="10px"
                         xs={12}
@@ -244,6 +352,7 @@ function AddEquipment() {
                         )}
                       </Grid>
                       <Grid
+                        item
                         paddingX="10px"
                         marginTop="10px"
                         xs={12}
@@ -269,18 +378,19 @@ function AddEquipment() {
                             <MenuItem style={{ fontSize: '17px' }} value={''}>
                               กรุณาเลือกหน่วย
                             </MenuItem>
-                            <MenuItem
-                              style={{ fontSize: '17px' }}
-                              value={'ชาย'}
-                            >
-                              ชาย
-                            </MenuItem>
-                            <MenuItem
-                              style={{ fontSize: '17px' }}
-                              value={'หญิง'}
-                            >
-                              หญิง
-                            </MenuItem>
+                            {typeList
+                              ? typeList.map(
+                                  (item: IEquipmentResult, index: number) => (
+                                    <MenuItem
+                                      key={index}
+                                      style={{ fontSize: '17px' }}
+                                      value={item.equipment_name}
+                                    >
+                                      {item.equipment_name}
+                                    </MenuItem>
+                                  )
+                                )
+                              : null}
                           </Select>
                         </FormControl>
                         {typeError ? (
@@ -308,6 +418,7 @@ function AddEquipment() {
                     marginTop="20px"
                   >
                     <Grid
+                      item
                       paddingX="10px"
                       marginTop="10px"
                       xs={12}
