@@ -19,12 +19,15 @@ export const GENDER_TEXT = 'เพศ';
 export const SALARY_TEXT = 'เงินเดือน';
 export const IMAGE_TEXT = 'รูปภาพ';
 export const ROLE_TEXT = 'หน้าที่';
+export const EQUIPMENT_TYPE_TEXT = 'หน่วยอุปกรณ์';
 export const COMFIRM_BUTTON_TEXT = 'ยืนยัน';
 export const SEARCH_TEXT = 'ค้นหา';
 export const OPTION_EDIT = 'แก้ไขรายการ';
 export const OPTION_DELETE = 'ลบรายการ';
 export const STATUS_TEXT = 'สถานะ';
 export const DESCRIPTION_TEXT = 'รายละเอียด';
+export const EQUIPMENT_TEXT = 'อุปกรณ์';
+export const EQUIPMENT_AMOUNT_TEXT = 'จำนวนอุปกรณ์';
 export const EQUIPMENT_LIST_TITLE_TEXT = 'รายการอุปกรณ์';
 
 // Status

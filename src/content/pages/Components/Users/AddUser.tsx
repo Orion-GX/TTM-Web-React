@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardHeader,
-  CardMedia,
   Container,
   Divider,
   FormControl,
@@ -13,12 +12,11 @@ import {
   MenuItem,
   Select,
   SelectChangeEvent,
-  styled,
   TextareaAutosize,
   TextField,
   Typography
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Footer from 'src/components/Footer';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
@@ -28,11 +26,8 @@ import {
   COMFIRM_BUTTON_TEXT,
   DESCRIPTION_TEXT,
   EQUIPMENT_ADD,
-  EQUIPMENT_AMOUNT_TEXT,
   EQUIPMENT_LIST_TITLE_TEXT,
   EQUIPMENT_MANAGEMENT,
-  EQUIPMENT_TEXT,
-  EQUIPMENT_TYPE_TEXT,
   GENDER_TEXT,
   NAME_TEXT,
   PASSWORD_TEXT,
@@ -41,39 +36,20 @@ import {
   STATUS_TEXT,
   USERNAME_TEXT
 } from 'src/constants';
-import UploadTwoToneIcon from '@mui/icons-material/UploadTwoTone';
 import validator from 'validator';
 
-const CardCover = styled(Card)(
-  ({ theme }) => `
-    position: relative;
-
-    .MuiCardMedia-root {
-      height: ${theme.spacing(26)};
-    }
-`
-);
-
-const CardCoverAction = styled(Box)(
-  ({ theme }) => `
-    position: absolute;
-    right: ${theme.spacing(2)};
-    bottom: ${theme.spacing(2)};
-`
-);
-
-const Input = styled('input')({
-  display: 'none'
-});
-
-function AddEquipment() {
-  const [imageUrl, setImageUrl] = useState(null);
+function AddUser() {
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState(false);
-  const [amount, setAmount] = useState(0);
-  const [amountError, setAmountError] = useState(false);
-  const [type, setType] = useState('');
-  const [typeError, setTypeError] = useState(false);
+  const [citizen, setCitizen] = useState('');
+  const [citizenError, setCitizenError] = useState(false);
+  const [phone, setPhone] = useState('');
+  const [phoneError, setPhoneError] = useState(false);
+  const [salary, setSalary] = useState('');
+  const [salaryError, setSalaryError] = useState(false);
+  const [gender, setGender] = useState('');
+  const [genderError, setGenderError] = useState(false);
+  const [address, setAddress] = useState('');
 
   const validateData = () => {
     if (validator.isEmpty(name)) {
@@ -81,22 +57,11 @@ function AddEquipment() {
     } else {
       setNameError(false);
     }
-    if (!validator.isNumeric(amount)) {
-      setAmountError(true);
+    if (!validator.isNumeric(citizen)) {
+      setCitizenError(true);
     } else {
-      setAmountError(false);
+      setCitizenError(false);
     }
-  };
-
-  // useEffect(() => {
-  //   if (imageUrl) {
-  //     setImageUrl(URL.createObjectURL(imageUrl));
-  //   }
-  // }, [imageUrl]);
-
-  const handleChangeImage = (e) => {
-    const [file] = e.target.files;
-    setImageUrl(URL.createObjectURL(file));
   };
 
   return (
@@ -135,36 +100,6 @@ function AddEquipment() {
               />
               <Divider />
               <CardContent style={{}}>
-                <Box marginBottom="20px" marginX="10px">
-                  <CardCover>
-                    <CardMedia
-                      image={
-                        imageUrl
-                          ? imageUrl
-                          : '/static/images/placeholders/covers/upload.jpg'
-                      }
-                    />
-                    <CardCoverAction>
-                      <Input
-                        accept="image/*"
-                        id="change-cover"
-                        multiple
-                        type="file"
-                        onChange={handleChangeImage}
-                      />
-                      <label htmlFor="change-cover">
-                        <Button
-                          startIcon={<UploadTwoToneIcon />}
-                          variant="contained"
-                          component="span"
-                          style={{ fontSize: '17px' }}
-                        >
-                          อัปโหลดรูปภาพ
-                        </Button>
-                      </label>
-                    </CardCoverAction>
-                  </CardCover>
-                </Box>
                 <Box component="form" noValidate autoComplete="off">
                   <div>
                     <Grid
@@ -177,9 +112,9 @@ function AddEquipment() {
                         paddingX="10px"
                         marginTop="10px"
                         xs={12}
-                        sm={6}
-                        md={6}
-                        lg={6}
+                        sm={7}
+                        md={7}
+                        lg={7}
                       >
                         <TextField
                           required
@@ -187,7 +122,7 @@ function AddEquipment() {
                           id="name"
                           inputProps={{ maxLength: 255 }}
                           value={name}
-                          label={'ชื่อ' + EQUIPMENT_TEXT}
+                          label={NAME_TEXT}
                           onChange={(e) => {
                             setName(e.target.value);
                           }}
@@ -199,75 +134,82 @@ function AddEquipment() {
                             paddingX="10px"
                             color="red"
                           >
-                            กรุณากรอกชื่อ{EQUIPMENT_TEXT}ให้ถูกต้อง
+                            กรุณากรอกชื่อ-นามสกุลให้ถูกต้อง
                           </Typography>
                         ) : (
                           <></>
                         )}
                       </Grid>
-
                       <Grid
                         paddingX="10px"
                         marginTop="10px"
                         xs={12}
-                        sm={4}
-                        md={4}
-                        lg={4}
+                        sm={5}
+                        md={5}
+                        lg={5}
                       >
                         <TextField
                           required
                           fullWidth
                           id="citizen"
-                          value={amount}
-                          label={EQUIPMENT_AMOUNT_TEXT}
+                          value={citizen}
+                          label={CITIZEN_TEXT}
                           onChange={(e) => {
                             const regex = /^[0-9\b]+$/;
                             if (
                               e.target.value === '' ||
                               regex.test(e.target.value)
                             ) {
-                              setAmount(parseInt(e.target.value));
+                              if (e.target.value.length <= 13) {
+                                setCitizen(e.target.value);
+                              }
                             }
                           }}
                         />
-                        {amountError ? (
+                        {citizenError ? (
                           <Typography
                             fontFamily="Quark-Bold"
                             fontSize="16px"
                             paddingX="10px"
                             color="red"
                           >
-                            กรุณากรอก{EQUIPMENT_AMOUNT_TEXT}ให้ถูกต้อง
+                            กรุณากรอก{CITIZEN_TEXT}ให้ถูกต้อง
                           </Typography>
                         ) : (
                           <></>
                         )}
                       </Grid>
+                    </Grid>
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="start"
+                      alignItems="stretch"
+                      marginTop="20px"
+                    >
                       <Grid
                         paddingX="10px"
                         marginTop="10px"
                         xs={12}
-                        sm={2}
-                        md={2}
-                        lg={2}
+                        sm={6}
+                        md={3}
+                        lg={3}
                       >
                         <FormControl fullWidth>
-                          <InputLabel id="gender">
-                            {EQUIPMENT_TYPE_TEXT}
-                          </InputLabel>
+                          <InputLabel id="gender">{GENDER_TEXT}</InputLabel>
                           <Select
                             required
                             labelId="gender-label"
                             id="gender-select"
-                            value={type}
-                            defaultValue={EQUIPMENT_TYPE_TEXT}
+                            value={gender}
+                            defaultValue={GENDER_TEXT}
                             label="gender"
                             onChange={(e) => {
-                              setType(e.target.value);
+                              setGender(e.target.value);
                             }}
                           >
                             <MenuItem style={{ fontSize: '17px' }} value={''}>
-                              กรุณาเลือกหน่วย
+                              กรุณาเลือกเพศ
                             </MenuItem>
                             <MenuItem
                               style={{ fontSize: '17px' }}
@@ -283,18 +225,125 @@ function AddEquipment() {
                             </MenuItem>
                           </Select>
                         </FormControl>
-                        {typeError ? (
+                        {genderError ? (
                           <Typography
                             fontFamily="Quark-Bold"
                             fontSize="16px"
                             paddingX="10px"
                             color="red"
                           >
-                            กรุณาเลือก{EQUIPMENT_TYPE_TEXT}
+                            กรุณาเลือก{GENDER_TEXT}
                           </Typography>
                         ) : (
                           <></>
                         )}
+                      </Grid>
+                      <Grid
+                        paddingX="10px"
+                        marginTop="10px"
+                        xs={12}
+                        sm={6}
+                        md={4}
+                        lg={4}
+                      >
+                        <TextField
+                          required
+                          fullWidth
+                          id="phone"
+                          value={phone}
+                          inputProps={{ maxLength: 10 }}
+                          label={PHONE_TEXT}
+                          onChange={(e) => {
+                            const regex = /^[0-9\b]+$/;
+                            if (
+                              e.target.value === '' ||
+                              regex.test(e.target.value)
+                            ) {
+                              if (e.target.value.length <= 10) {
+                                setPhone(e.target.value);
+                              }
+                            }
+                          }}
+                        />
+                        {phoneError ? (
+                          <Typography
+                            fontFamily="Quark-Bold"
+                            fontSize="16px"
+                            paddingX="10px"
+                            color="red"
+                          >
+                            กรุณากรอก{PHONE_TEXT}ให้ถูกต้อง
+                          </Typography>
+                        ) : (
+                          <></>
+                        )}
+                      </Grid>
+                      <Grid
+                        paddingX="10px"
+                        marginTop="10px"
+                        xs={12}
+                        sm={6}
+                        md={5}
+                        lg={5}
+                      >
+                        <TextField
+                          fullWidth
+                          id="salary"
+                          value={salary}
+                          label={SALARY_TEXT}
+                          onChange={(e) => {
+                            const regex = /^[0-9.\b]+$/;
+                            if (
+                              e.target.value === '' ||
+                              regex.test(e.target.value)
+                            ) {
+                              setSalary(e.target.value);
+                            }
+                          }}
+                        />
+                        {salaryError ? (
+                          <Typography
+                            fontFamily="Quark-Bold"
+                            fontSize="16px"
+                            paddingX="10px"
+                            color="red"
+                          >
+                            กรุณากรอก{SALARY_TEXT}ให้ถูกต้อง
+                          </Typography>
+                        ) : (
+                          <></>
+                        )}
+                      </Grid>
+                    </Grid>
+                    <Grid
+                      container
+                      direction="row"
+                      justifyContent="start"
+                      alignItems="stretch"
+                      marginTop="20px"
+                    >
+                      <Grid
+                        paddingX="10px"
+                        marginTop="10px"
+                        xs={12}
+                        sm={12}
+                        md={12}
+                        lg={12}
+                      >
+                        <TextField
+                          fullWidth
+                          multiline
+                          inputProps={{ maxLength: 255 }}
+                          id="address"
+                          value={address}
+                          label={ADDRESS_TEXT}
+                          InputProps={{
+                            rows: 3
+                          }}
+                          onChange={(e) => {
+                            setAddress(e.target.value);
+                          }}
+                        />
                       </Grid>
                     </Grid>
                   </div>
@@ -339,4 +388,4 @@ function AddEquipment() {
   );
 }
 
-export default AddEquipment;
+export default AddUser;

@@ -10,7 +10,8 @@ const themeColors = {
   info: '#33C2FF',
   black: '#223354',
   white: '#ffffff',
-  primaryAlt: '#000C57'
+  primaryAlt: '#000C57',
+  main: '#11192A'
 };
 
 const colors = {
@@ -126,6 +127,12 @@ const colors = {
     light: lighten(themeColors.info, 0.3),
     main: themeColors.info,
     dark: darken(themeColors.info, 0.2)
+  },
+  main: {
+    lighter: lighten(themeColors.main, 0.85),
+    light: lighten(themeColors.main, 0.3),
+    main: themeColors.main,
+    dark: darken(themeColors.main, 0.2)
   }
 };
 
