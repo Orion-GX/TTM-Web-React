@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 import PageTitle from 'src/components/PageTitle';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
@@ -10,7 +10,8 @@ import {
   Card,
   CardHeader,
   CardContent,
-  Divider
+  Divider,
+  Slide
 } from '@mui/material';
 import Button from '@mui/material/Button';
 import Avatar from '@mui/material/Avatar';
@@ -25,8 +26,18 @@ import AddIcon from '@mui/icons-material/Add';
 import Typography from '@mui/material/Typography';
 import { blue } from '@mui/material/colors';
 import Footer from 'src/components/Footer';
+import { TransitionProps } from '@mui/material/transitions';
 
 const emails = ['username@gmail.com', 'user02@gmail.com'];
+
+const Transition = React.forwardRef(function Transition(
+  props: TransitionProps & {
+    children: React.ReactElement<any, any>;
+  },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function SimpleDialog(props) {
   const { onClose, selectedValue, open } = props;
@@ -40,37 +51,13 @@ function SimpleDialog(props) {
   };
 
   return (
-    <Dialog onClose={handleClose} open={open}>
+    <Dialog
+      keepMounted
+      TransitionComponent={Transition}
+      onClose={handleClose}
+      open={open}
+    >
       <DialogTitle>Set backup account</DialogTitle>
-      <List sx={{ pt: 0 }}>
-        {emails.map((email) => (
-          <ListItem
-            button
-            onClick={() => handleListItemClick(email)}
-            key={email}
-          >
-            <ListItemAvatar>
-              <Avatar sx={{ bgcolor: blue[100], color: blue[600] }}>
-                <PersonIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={email} />
-          </ListItem>
-        ))}
-
-        <ListItem
-          autoFocus
-          button
-          onClick={() => handleListItemClick('addAccount')}
-        >
-          <ListItemAvatar>
-            <Avatar>
-              <AddIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemText primary="Add account" />
-        </ListItem>
-      </List>
     </Dialog>
   );
 }

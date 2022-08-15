@@ -25,6 +25,7 @@ import {
   DESCRIPTION_TEXT,
   EQUIPMENT_ADD,
   EQUIPMENT_AMOUNT_TEXT,
+  EQUIPMENT_EDIT,
   EQUIPMENT_MANAGEMENT,
   EQUIPMENT_TEXT,
   EQUIPMENT_TYPE_TEXT,
@@ -36,39 +37,45 @@ import {
 } from 'src/constants';
 import UploadTwoToneIcon from '@mui/icons-material/UploadTwoTone';
 import axios from 'axios';
-import { apiUrl, server, UPLOAD_URL } from 'src/constants/config';
+import { apiUrl, IMAGE_URL, server, UPLOAD_URL } from 'src/constants/config';
 import { IEquipmentTypeResponse } from 'src/models/response/equipmentTypeResponse';
 import { IEquipmentResult } from 'src/models/result/equipmentResult';
 import { validateFileSize } from 'src/utils/commonUtil';
 import LoadingBackdrop from 'src/components/LoadingBackDrop';
 import ModalSuccess from 'src/components/ModalSuccess';
 import ModalError from 'src/components/ModalError';
+import { EditDataProps } from 'src/props/editProps';
+import { IEquipmentResponseList } from 'src/models/response/equipmentResponseList';
+import { useLocation } from 'react-router';
+import { IEquipmentResponse } from 'src/models/response/equipmentResponse';
 
 const CardCover = styled(Card)(
   ({ theme }) => `
-    position: relative;
-
-    .MuiCardMedia-root {
-      height: ${theme.spacing(26)};
-    }
-`
+      position: relative;
+  
+      .MuiCardMedia-root {
+        height: ${theme.spacing(26)};
+      }
+  `
 );
 
 const CardCoverAction = styled(Box)(
   ({ theme }) => `
-    position: absolute;
-    right: ${theme.spacing(2)};
-    bottom: ${theme.spacing(2)};
-`
+      position: absolute;
+      right: ${theme.spacing(2)};
+      bottom: ${theme.spacing(2)};
+  `
 );
 
 const Input = styled('input')({
   display: 'none'
 });
 
-function AddEquipment() {
-  const [image, setImage] = useState([])
+function EditEquipment(props: EditDataProps) {
+  const [itemId, setItemId] = useState('');
+  const [image, setImage] = useState([]);
   const [imageUrl, setImageUrl] = useState(null);
+  const [imagePathDefault, setImagePathDefault] = useState('');
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState(false);
   const [amount, setAmount] = useState(0);
@@ -82,6 +89,7 @@ function AddEquipment() {
   const [openDialog, setOpenDialog] = useState(false);
   const [openErrorDialog, setOpenErrorDialog] = useState(false);
   const [createId, setCreateId] = useState('');
+  const location = useLocation();
 
   const validateData = () => {
     let check = false;
@@ -99,7 +107,7 @@ function AddEquipment() {
     }
     if (!check) {
       setLoading(true);
-      addEquipment();
+      editEquipment(imagePathDefault);
     }
   };
 
@@ -135,57 +143,19 @@ function AddEquipment() {
         setImage([...e.target.files]);
         setImageUrl(URL.createObjectURL(file));
       }
-      console.log(file);
+      //   console.log(file);
     }
   };
 
-  const addEquipment = async () => {
-    let type_id = typeList.find((e) => e.name == type);
-    let data = {
-      name: name,
-      amount: amount,
-      image: null,
-      type_id: type_id ? type_id.id : null
-    };
+  const editEquipment = async (imagePath) => {
+    console.log(createId);
 
-    await axios({
-      method: 'post',
-      timeout: 1000 * 10,
-      url: apiUrl + server.EQUIPMENT_ADD,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      data: data
-    })
-      .then((res) => {
-        setLoading(false);
-        if (res.status == 200) {
-          console.log(res.data);
-          setCreateId(res.data.result.equipment_id);
-          uploadImage();
-          // setLoading(false);
-          // setOpenDialog(true);
-          // setErrorMessage(res.data.description);
-        } else {
-          setLoading(false);
-          setOpenErrorDialog(true);
-          setErrorMessage(res.data.description);
-        }
-      })
-      .catch((err) => {
-        setLoading(false);
-        setOpenErrorDialog(true);
-        setErrorMessage(REQUEST_ERROR_TEXT);
-      });
-  };
-
-  const editEquipment = async (createdId, imagePath) => {
     let type_id = typeList.find((e) => e.name == type);
     let data = {
       name: name,
       amount: amount,
       image: imagePath,
-      staus_flag: STATUS_TEXT_LIST.ACTIVE.name,
+      staus_flag: 'ACTIVE',
       enable_flag: true,
       type_id: type_id ? type_id.id : null
     };
@@ -193,7 +163,7 @@ function AddEquipment() {
     await axios({
       method: 'put',
       timeout: 1000 * 10,
-      url: apiUrl + server.EQUIPMENT_EDIT + createdId,
+      url: apiUrl + server.EQUIPMENT_EDIT + itemId,
       headers: {
         'Content-Type': 'application/json'
       },
@@ -221,8 +191,8 @@ function AddEquipment() {
   const uploadImage = async () => {
     const formData = new FormData();
     image.forEach((file, i) => {
-      formData.append(i.toString(), file)
-    })
+      formData.append(i.toString(), file);
+    });
     // formData.append('file', image);
     const uploadImg = await axios({
       method: 'post',
@@ -237,10 +207,6 @@ function AddEquipment() {
           // setLoading(false);
           // setOpenDialog(true);
           // setErrorMessage(res.data.description);
-          editEquipment(
-            createId,
-            res.data.data ? res.data.data[0].filename : null
-          );
         } else {
           setLoading(false);
           setOpenErrorDialog(true);
@@ -251,6 +217,34 @@ function AddEquipment() {
         setLoading(false);
         setOpenErrorDialog(true);
         setErrorMessage(REQUEST_UPLOAD_ERROR_TEXT);
+      });
+  };
+
+  const getEquipmentInfo = async (id) => {
+    await axios
+      .get(apiUrl + server.EQUIPMENT_DETAIL + id)
+      .then((res) => {
+        if (res.status == 200) {
+          const resultData: IEquipmentResponse = res.data;
+          setName(resultData.result.name);
+          setAmount(resultData.result.amount);
+          if (resultData.result.type) {
+            setType(resultData.result.type ? resultData.result.type.name : '');
+          }
+          if (resultData.result.image) {
+            setImagePathDefault(resultData.result.image);
+            setImageUrl(IMAGE_URL + resultData.result.image);
+          }
+        } else {
+          setLoading(false);
+          setOpenErrorDialog(true);
+          setErrorMessage(REQUEST_ERROR_TEXT);
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        setOpenErrorDialog(true);
+        setErrorMessage(REQUEST_ERROR_TEXT);
       });
   };
 
@@ -266,13 +260,15 @@ function AddEquipment() {
           setTypeList(test.result);
         }
       })
-      .catch((err) => {
-        alert(err);
-      });
+      .catch((err) => {});
   };
 
   useEffect(() => {
+    let x: any = location.state;
+    console.log(x.id);
+    setItemId(x.id);
     getEquipmentType();
+    getEquipmentInfo(x.id);
   }, []);
 
   return (
@@ -296,7 +292,7 @@ function AddEquipment() {
         >
           <Grid item xs={12} lg={12}>
             <Typography variant="h2" component="h2" gutterBottom>
-              {EQUIPMENT_ADD}
+              {EQUIPMENT_EDIT}
             </Typography>
           </Grid>
         </Grid>
@@ -395,9 +391,9 @@ function AddEquipment() {
                         paddingX="10px"
                         marginTop="10px"
                         xs={12}
-                        sm={4}
-                        md={4}
-                        lg={4}
+                        sm={3}
+                        md={3}
+                        lg={3}
                       >
                         <TextField
                           required
@@ -433,9 +429,9 @@ function AddEquipment() {
                         paddingX="10px"
                         marginTop="10px"
                         xs={12}
-                        sm={2}
-                        md={2}
-                        lg={2}
+                        sm={3}
+                        md={3}
+                        lg={3}
                       >
                         <FormControl fullWidth>
                           <InputLabel id="gender">
@@ -527,4 +523,4 @@ function AddEquipment() {
   );
 }
 
-export default AddEquipment;
+export default EditEquipment;

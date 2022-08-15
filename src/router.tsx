@@ -6,6 +6,7 @@ import SidebarLayout from 'src/layouts/SidebarLayout';
 import BaseLayout from 'src/layouts/BaseLayout';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import EditEquipment from './content/pages/Components/Equipments/EditEquipment';
 
 const Loader = (Component) => (props) =>
   (
@@ -171,6 +172,10 @@ const routes: RouteObject[] = [
       {
         path: 'add',
         element: <AddEquipment />
+      },
+      {
+        path: 'edit',
+        element: <EditEquipment />
       }
     ]
   },

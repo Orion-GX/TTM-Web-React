@@ -2,6 +2,7 @@ import {
   Box,
   Card,
   CardHeader,
+  CardMedia,
   Container,
   Divider,
   FormControl,
@@ -10,6 +11,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  styled,
   Table,
   TableBody,
   TableCell,
@@ -26,13 +28,14 @@ import { useEffect, useState, useMemo, ChangeEvent, useRef } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Footer from 'src/components/Footer';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
-import { apiUrl, server } from 'src/constants/config';
+import { apiUrl, IMAGE_URL, server } from 'src/constants/config';
 import { IEquipmentResponseList } from 'src/models/response/equipmentResponseList';
 import EquipmentPageHeader from './PageHeader';
 import debouce from 'lodash.debounce';
 import Label from 'src/components/Label';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
+import { Link, NavLink as RouterLink } from 'react-router-dom';
 import {
   EQUIPMENT_LIST_TITLE_TEXT,
   OPTION_DELETE,
@@ -42,6 +45,16 @@ import {
   STATUS_TEXT_LIST
 } from 'src/constants';
 import { IEquipmentResult } from 'src/models/result/equipmentResult';
+import { Image } from '@mui/icons-material';
+const CardCover = styled(Card)(
+  ({ theme }) => `
+    position: relative;
+
+    .MuiCardMedia-root {
+      height: ${theme.spacing(15)};
+    }
+`
+);
 
 const getStatusLabel = (textStatus: string): JSX.Element => {
   let map = {};
@@ -57,7 +70,7 @@ const getStatusLabel = (textStatus: string): JSX.Element => {
     case 'PENDING':
       map = {
         text: STATUS_TEXT_LIST.PENDING.name,
-        color: 'success'
+        color: 'warning'
       };
       break;
     case 'SUSPENDED':
@@ -127,12 +140,7 @@ function EquipmentManagementPage() {
   const getEquipment = async () => {
     await axios
       .post(
-        apiUrl +
-          server.EQUIPMENT_SEARCH +
-          '?limit=' +
-          limit +
-          '&offset=' +
-          page,
+        apiUrl + server.EQUIPMENT_SEARCH + '?limit=' + limit + '&page=' + page,
         {
           search: search,
           status: status
@@ -229,19 +237,16 @@ function EquipmentManagementPage() {
                           return (
                             <TableRow hover key={index}>
                               <TableCell>
-                                <Typography
-                                  variant="body1"
-                                  fontWeight="bold"
-                                  color="text.primary"
-                                  fontSize="18px"
-                                  gutterBottom
-                                  noWrap
-                                >
-                                  {item.equipment_image}
-                                </Typography>
-                                {/* <Typography variant="body2" color="text.secondary" noWrap>
-                      {format(item.orderDate, 'MMMM dd yyyy')}
-                    </Typography> */}
+                                <CardCover>
+                                  <CardMedia
+                                    sx={{ maxWidth: '100%', minWidth: '100px' }}
+                                    image={
+                                      item.image
+                                        ? IMAGE_URL + item.image
+                                        : '/static/images/placeholders/covers/upload.jpg'
+                                    }
+                                  />
+                                </CardCover>
                               </TableCell>
                               <TableCell>
                                 <Typography
@@ -252,7 +257,7 @@ function EquipmentManagementPage() {
                                   gutterBottom
                                   noWrap
                                 >
-                                  {item.equipment_name}
+                                  {item.name}
                                 </Typography>
                               </TableCell>
                               <TableCell align="right">
@@ -264,29 +269,32 @@ function EquipmentManagementPage() {
                                   gutterBottom
                                   noWrap
                                 >
-                                  {item.equipment_amount} {item.equipment_type}
+                                  {item.amount} {item.type}
                                 </Typography>
-                                {/* <Typography variant="body2" color="text.secondary" noWrap>
-                      {numeral(item.amount).format(`${item.currency}0,0.00`)}
-                    </Typography> */}
                               </TableCell>
                               <TableCell align="right">
-                                {getStatusLabel(item.equipment_status)}
+                                {getStatusLabel(item.status_flag)}
                               </TableCell>
                               <TableCell align="right">
                                 <Tooltip title={OPTION_EDIT} arrow>
-                                  <IconButton
-                                    sx={{
-                                      '&:hover': {
-                                        background: theme.colors.primary.lighter
-                                      },
-                                      color: theme.palette.primary.main
-                                    }}
-                                    color="inherit"
-                                    size="small"
+                                  <Link
+                                    to={{ pathname: '/equipment/edit' }}
+                                    state={{ id: item.id }}
                                   >
-                                    <EditTwoToneIcon fontSize="small" />
-                                  </IconButton>
+                                    <IconButton
+                                      sx={{
+                                        '&:hover': {
+                                          background:
+                                            theme.colors.primary.lighter
+                                        },
+                                        color: theme.palette.primary.main
+                                      }}
+                                      color="inherit"
+                                      size="small"
+                                    >
+                                      <EditTwoToneIcon fontSize="small" />
+                                    </IconButton>
+                                  </Link>
                                 </Tooltip>
                                 <Tooltip title={OPTION_DELETE} arrow>
                                   <IconButton

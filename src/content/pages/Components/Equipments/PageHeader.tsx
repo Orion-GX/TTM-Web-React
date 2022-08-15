@@ -17,10 +17,6 @@ interface EquipmentPageProps {
 }
 
 function EquipmentPageHeader({ handleChange, onSearch }: EquipmentPageProps) {
-  const user = {
-    name: 'Catherine Pike',
-    avatar: '/static/images/avatars/1.jpg'
-  };
 
   return (
     <Grid

@@ -1,8 +1,7 @@
 import { IEquipmentResult } from "../result/equipmentResult";
-import { Pagination } from "./paginateResponse";
+import { Pagination } from "../result/paginateResponse";
 
 export interface IEquipmentResponseList {
-    [x: string]: any;
     code: number,
     status: string,
     message: string,
