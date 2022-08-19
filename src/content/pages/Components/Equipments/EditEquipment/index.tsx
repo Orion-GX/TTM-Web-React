@@ -1,10 +1,12 @@
 import {
+  Badge,
   Box,
   Button,
   Card,
   CardContent,
   CardHeader,
   CardMedia,
+  Chip,
   Container,
   Divider,
   FormControl,
@@ -16,7 +18,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import Footer from 'src/components/Footer';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
@@ -32,6 +34,7 @@ import {
   IMAGE_SIZE_ERROR_TEXT,
   REQUEST_ERROR_TEXT,
   REQUEST_UPLOAD_ERROR_TEXT,
+  STATUS_SEARCH,
   STATUS_TEXT_LIST,
   UPLOAD_TEXT
 } from 'src/constants';
@@ -40,7 +43,11 @@ import axios from 'axios';
 import { apiUrl, IMAGE_URL, server, UPLOAD_URL } from 'src/constants/config';
 import { IEquipmentTypeResponse } from 'src/models/response/equipmentTypeResponse';
 import { IEquipmentResult } from 'src/models/result/equipmentResult';
-import { validateFileSize } from 'src/utils/commonUtil';
+import {
+  getStatus,
+  getStatusLabel,
+  validateFileSize
+} from 'src/utils/commonUtil';
 import LoadingBackdrop from 'src/components/LoadingBackDrop';
 import ModalSuccess from 'src/components/ModalSuccess';
 import ModalError from 'src/components/ModalError';
@@ -48,6 +55,11 @@ import { EditDataProps } from 'src/props/editProps';
 import { IEquipmentResponseList } from 'src/models/response/equipmentResponseList';
 import { useLocation } from 'react-router';
 import { IEquipmentResponse } from 'src/models/response/equipmentResponse';
+import { IUploadResponse } from 'src/models/response/uploadResponse';
+import ModalCustom from 'src/components/CustomModal';
+import CustomDropdownStatus from 'src/components/CustomDropdownStatus';
+import DoneIcon from '@mui/icons-material/Done';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const CardCover = styled(Card)(
   ({ theme }) => `
@@ -73,7 +85,7 @@ const Input = styled('input')({
 
 function EditEquipment(props: EditDataProps) {
   const [itemId, setItemId] = useState('');
-  const [image, setImage] = useState([]);
+  const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [imagePathDefault, setImagePathDefault] = useState('');
   const [name, setName] = useState('');
@@ -88,7 +100,11 @@ function EditEquipment(props: EditDataProps) {
   const [errorMessage, setErrorMessage] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const [openErrorDialog, setOpenErrorDialog] = useState(false);
+  const [openCustom, setOpenCustom] = useState(false);
   const [createId, setCreateId] = useState('');
+  const [filters, setFilters] = useState('');
+  const statusOptions = STATUS_SEARCH.slice(0, STATUS_SEARCH.length - 1);
+  const [status, setStatus] = useState('');
   const location = useLocation();
 
   const validateData = () => {
@@ -107,7 +123,11 @@ function EditEquipment(props: EditDataProps) {
     }
     if (!check) {
       setLoading(true);
-      editEquipment(imagePathDefault);
+      if (image) {
+        uploadImage();
+      } else {
+        editEquipment(imagePathDefault);
+      }
     }
   };
 
@@ -118,6 +138,11 @@ function EditEquipment(props: EditDataProps) {
     setOpenDialog(false);
     history.back();
   };
+
+  const handleCloseCustomDialog = () => {
+    setOpenCustom(false);
+  };
+
   const handleCloseErrorDialog = () => {
     if (errorMessage == REQUEST_UPLOAD_ERROR_TEXT) {
       history.back();
@@ -133,14 +158,29 @@ function EditEquipment(props: EditDataProps) {
     setLoading(!loading);
   };
 
+  const handleStatusChange = (e: ChangeEvent<HTMLInputElement>) => {
+    for (let i = 0; i < statusOptions.length; i++) {
+      const element = statusOptions[i];
+      // console.log(element);
+
+      if (element.id == e.target.value) {
+        setFilters(element.id);
+        setStatus(element.id);
+      }
+    }
+  };
+
   const handleChangeImage = (e) => {
     const [file] = e.target.files;
+    console.log(file);
+    console.log(e.target.files);
+
     if (file) {
       if (!validateFileSize(file.size)) {
         setOpenErrorDialog(true);
         setErrorMessage(IMAGE_SIZE_ERROR_TEXT);
       } else {
-        setImage([...e.target.files]);
+        setImage(file);
         setImageUrl(URL.createObjectURL(file));
       }
       //   console.log(file);
@@ -189,21 +229,25 @@ function EditEquipment(props: EditDataProps) {
   };
 
   const uploadImage = async () => {
+    let url = UPLOAD_URL + server.EQUIPMENT_IMAGE_UPLOAD;
+    let header = {
+      'Content-Type': 'multipart/form-data'
+    };
     const formData = new FormData();
-    image.forEach((file, i) => {
-      formData.append(i.toString(), file);
-    });
-    // formData.append('file', image);
+    formData.append('file', image);
     const uploadImg = await axios({
       method: 'post',
-      url: UPLOAD_URL + server.EQUIPMENT_IMAGE_UPLOAD,
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      },
-      data: formData
+      url: url,
+      data: formData,
+      headers: header
     })
       .then((res) => {
         if (res.status == 200) {
+          let result: IUploadResponse = res.data;
+
+          console.log(result);
+
+          editEquipment(result.data[0].filename);
           // setLoading(false);
           // setOpenDialog(true);
           // setErrorMessage(res.data.description);
@@ -228,6 +272,7 @@ function EditEquipment(props: EditDataProps) {
           const resultData: IEquipmentResponse = res.data;
           setName(resultData.result.name);
           setAmount(resultData.result.amount);
+          setStatus(resultData.result.status_flag);
           if (resultData.result.type) {
             setType(resultData.result.type ? resultData.result.type.name : '');
           }
@@ -282,6 +327,15 @@ function EditEquipment(props: EditDataProps) {
         open={openErrorDialog}
         handleClose={handleCloseErrorDialog}
       />
+      <ModalCustom
+        title="Test"
+        description="ssssssssssssssssssssssssssssssssssssssssssss"
+        cancelButton={true}
+        confirmButton={true}
+        open={openCustom}
+        handleClose={handleCloseCustomDialog}
+        handleConfirm={handleCloseCustomDialog}
+      />
       <LoadingBackdrop loading={loading} handleChange={handleChangeLoading} />
       <PageTitleWrapper>
         <Grid
@@ -310,6 +364,46 @@ function EditEquipment(props: EditDataProps) {
             <Card>
               <CardHeader
                 style={{ backgroundColor: '#F9FAFC', fontSize: '19px' }}
+                action={
+                  <Box style={{ paddingInline: '20px', fontSize: '19px' }}>
+                    <Grid
+                      sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center'
+                      }}
+                      container
+                      direction="row"
+                      justifyContent="center"
+                      alignItems="center"
+                      spacing={3}
+                    >
+                      <Grid item>
+                        {/* <CustomDropdownStatus
+                          handleStatusChange={handleStatusChange}
+                          filters={filters}
+                          statusOptions={statusOptions}
+                        /> */}
+                        {getStatusLabel(status)}
+                      </Grid>
+                      <Grid item>
+                        <Button
+                          style={{ fontSize: '19px', color: 'black' }}
+                          fullWidth
+                          variant="contained"
+                          color="warning"
+                          onClick={(e) => {
+                            setErrorMessage('');
+                            setOpenCustom(true);
+                          }}
+                        >
+                          ลบข้อมูล
+                        </Button>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                }
+                titleTypographyProps={{ fontSize: '19px' }}
                 title={DESCRIPTION_TEXT}
               />
               <Divider />

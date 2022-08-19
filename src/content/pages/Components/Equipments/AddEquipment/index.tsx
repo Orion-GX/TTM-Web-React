@@ -67,7 +67,7 @@ const Input = styled('input')({
 });
 
 function AddEquipment() {
-  const [image, setImage] = useState([])
+  const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [name, setName] = useState('');
   const [nameError, setNameError] = useState(false);
@@ -132,7 +132,7 @@ function AddEquipment() {
         setOpenErrorDialog(true);
         setErrorMessage(IMAGE_SIZE_ERROR_TEXT);
       } else {
-        setImage([...e.target.files]);
+        setImage(file);
         setImageUrl(URL.createObjectURL(file));
       }
       console.log(file);
@@ -220,9 +220,8 @@ function AddEquipment() {
 
   const uploadImage = async () => {
     const formData = new FormData();
-    image.forEach((file, i) => {
-      formData.append(i.toString(), file)
-    })
+    formData.append('file', image);
+
     // formData.append('file', image);
     const uploadImg = await axios({
       method: 'post',
@@ -411,7 +410,11 @@ function AddEquipment() {
                               e.target.value === '' ||
                               regex.test(e.target.value)
                             ) {
-                              setAmount(parseInt(e.target.value));
+                              if (e.target.value === '') {
+                                setAmount(0);
+                              } else {
+                                setAmount(parseInt(e.target.value));
+                              }
                             }
                           }}
                         />

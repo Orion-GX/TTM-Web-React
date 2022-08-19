@@ -482,7 +482,7 @@ export const PureLightTheme = createTheme({
           marginBottom: -5
         },
         title: {
-          fontSize: 18
+          fontSize: 22
         }
       }
     },
