@@ -9,7 +9,8 @@ export const FOOTER_CREATE_BY_TEXT = 'Create by Tang Tang marketing.';
 
 // Text
 export const REQUEST_ERROR_TEXT = 'เกิดข้อผิดพลาด กรุณาตรวจข้อมูล';
-export const REQUEST_UPLOAD_ERROR_TEXT = 'เกิดข้อผิดพลาด ไม่สามารถอัปโหลดรูปได้';
+export const REQUEST_UPLOAD_ERROR_TEXT =
+  'เกิดข้อผิดพลาด ไม่สามารถอัปโหลดรูปได้';
 export const SIGN_IN_TITLE_TEXT = 'เข้าสู่ระบบ';
 export const USERNAME_TEXT = 'ชื่อผู้ใช้งาน';
 export const PASSWORD_TEXT = 'รหัสผ่าน';
@@ -37,6 +38,11 @@ export const EQUIPMENT_AMOUNT_TEXT = 'จำนวนอุปกรณ์';
 export const EQUIPMENT_LIST_TITLE_TEXT = 'รายการอุปกรณ์';
 export const UPLOAD_TEXT = 'อัปโหลดรูปภาพ';
 export const IMAGE_SIZE_ERROR_TEXT = 'ขนาดรูปเกินกำหนด ไม่เกิน 2 Mb';
+
+// Modal
+export const CONFIRM_DELETE_EQUIPMENT_TEXT = 'ยืนยันลบข้อมูลอุปกรณ์';
+export const CONTENT_CONFIRM_DELETE_EQUIPMENT_TEXT =
+  'คุณต้องการยืนยันการลบข้อมูลอุปกรณ์นี้';
 
 // Status
 export const STATUS_SEARCH = [

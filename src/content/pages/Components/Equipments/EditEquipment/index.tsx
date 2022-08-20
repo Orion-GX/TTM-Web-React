@@ -24,6 +24,8 @@ import Footer from 'src/components/Footer';
 import PageTitleWrapper from 'src/components/PageTitleWrapper';
 import {
   COMFIRM_BUTTON_TEXT,
+  CONFIRM_DELETE_EQUIPMENT_TEXT,
+  CONTENT_CONFIRM_DELETE_EQUIPMENT_TEXT,
   DESCRIPTION_TEXT,
   EQUIPMENT_ADD,
   EQUIPMENT_AMOUNT_TEXT,
@@ -60,6 +62,7 @@ import ModalCustom from 'src/components/CustomModal';
 import CustomDropdownStatus from 'src/components/CustomDropdownStatus';
 import DoneIcon from '@mui/icons-material/Done';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { TERMINATED } from 'src/constants/statusConstant';
 
 const CardCover = styled(Card)(
   ({ theme }) => `
@@ -126,7 +129,7 @@ function EditEquipment(props: EditDataProps) {
       if (image) {
         uploadImage();
       } else {
-        editEquipment(imagePathDefault);
+        editEquipment(imagePathDefault, true);
       }
     }
   };
@@ -158,7 +161,7 @@ function EditEquipment(props: EditDataProps) {
     setLoading(!loading);
   };
 
-  const handleStatusChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleStatusChange = (e: any) => {
     for (let i = 0; i < statusOptions.length; i++) {
       const element = statusOptions[i];
       // console.log(element);
@@ -187,7 +190,7 @@ function EditEquipment(props: EditDataProps) {
     }
   };
 
-  const editEquipment = async (imagePath) => {
+  const editEquipment = async (imagePath, isEnableFlag) => {
     console.log(createId);
 
     let type_id = typeList.find((e) => e.name == type);
@@ -195,10 +198,11 @@ function EditEquipment(props: EditDataProps) {
       name: name,
       amount: amount,
       image: imagePath,
-      staus_flag: 'ACTIVE',
-      enable_flag: true,
+      staus_flag: status,
+      enable_flag: status == TERMINATED ? false : isEnableFlag,
       type_id: type_id ? type_id.id : null
     };
+    console.log(data);
 
     await axios({
       method: 'put',
@@ -247,7 +251,7 @@ function EditEquipment(props: EditDataProps) {
 
           console.log(result);
 
-          editEquipment(result.data[0].filename);
+          editEquipment(result.data[0].filename, true);
           // setLoading(false);
           // setOpenDialog(true);
           // setErrorMessage(res.data.description);
@@ -273,6 +277,7 @@ function EditEquipment(props: EditDataProps) {
           setName(resultData.result.name);
           setAmount(resultData.result.amount);
           setStatus(resultData.result.status_flag);
+          setFilters(resultData.result.status_flag);
           if (resultData.result.type) {
             setType(resultData.result.type ? resultData.result.type.name : '');
           }
@@ -328,13 +333,17 @@ function EditEquipment(props: EditDataProps) {
         handleClose={handleCloseErrorDialog}
       />
       <ModalCustom
-        title="Test"
-        description="ssssssssssssssssssssssssssssssssssssssssssss"
+        title={CONFIRM_DELETE_EQUIPMENT_TEXT}
+        description={CONTENT_CONFIRM_DELETE_EQUIPMENT_TEXT}
         cancelButton={true}
         confirmButton={true}
         open={openCustom}
         handleClose={handleCloseCustomDialog}
-        handleConfirm={handleCloseCustomDialog}
+        handleConfirm={() => {
+          setOpenCustom(false);
+          setLoading(true);
+          editEquipment(imagePathDefault, false);
+        }}
       />
       <LoadingBackdrop loading={loading} handleChange={handleChangeLoading} />
       <PageTitleWrapper>
@@ -379,12 +388,12 @@ function EditEquipment(props: EditDataProps) {
                       spacing={3}
                     >
                       <Grid item>
-                        {/* <CustomDropdownStatus
+                        <CustomDropdownStatus
                           handleStatusChange={handleStatusChange}
                           filters={filters}
                           statusOptions={statusOptions}
-                        /> */}
-                        {getStatusLabel(status)}
+                        />
+                        {/* {getStatusLabel(status)} */}
                       </Grid>
                       <Grid item>
                         <Button

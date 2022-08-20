@@ -37,15 +37,21 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import { Link, NavLink as RouterLink } from 'react-router-dom';
 import {
+  CONFIRM_DELETE_EQUIPMENT_TEXT,
+  CONTENT_CONFIRM_DELETE_EQUIPMENT_TEXT,
   EQUIPMENT_LIST_TITLE_TEXT,
   OPTION_DELETE,
   OPTION_EDIT,
+  REQUEST_ERROR_TEXT,
   STATUS_SEARCH,
   STATUS_TEXT,
   STATUS_TEXT_LIST
 } from 'src/constants';
 import { IEquipmentResult } from 'src/models/result/equipmentResult';
 import { Image } from '@mui/icons-material';
+import ModalCustom from 'src/components/CustomModal';
+import ModalSuccess from 'src/components/ModalSuccess';
+import ModalError from 'src/components/ModalError';
 const CardCover = styled(Card)(
   ({ theme }) => `
     position: relative;
@@ -103,6 +109,12 @@ function EquipmentManagementPage() {
   const [itemList, setItemList] = useState<IEquipmentResult[]>([]);
   const [filters, setFilters] = useState('');
   const isFirstRender = useRef(true);
+  const [openCustom, setOpenCustom] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [itemValue, setItemValue] = useState<IEquipmentResult>();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openErrorDialog, setOpenErrorDialog] = useState(false);
   const theme = useTheme();
 
   const statusOptions = STATUS_SEARCH.slice(0, STATUS_SEARCH.length - 1);
@@ -150,8 +162,13 @@ function EquipmentManagementPage() {
         if (res.status == 200) {
           const resultData: IEquipmentResponseList = res.data;
           console.log(resultData);
-          setTotalItem(resultData.result?.pagination.total_item);
-          setItemList(resultData.result.content);
+          if (resultData.code == 200) {
+            setTotalItem(resultData.result?.pagination.total_item);
+            setItemList(resultData.result.content);
+          } else {
+            setTotalItem(0);
+            setItemList(null);
+          }
         } else {
           const test: IEquipmentResponseList = res.data;
           setItemList(test.result.content);
@@ -159,6 +176,52 @@ function EquipmentManagementPage() {
       })
       .catch((err) => {
         alert(err);
+      });
+  };
+
+  const editEquipment = async (isEnableFlag) => {
+    if (itemValue == null) {
+      setOpenErrorDialog(true);
+      setErrorMessage('กรุณาเลือกรายการที่ต้องการลบ');
+    }
+    let data = {
+      name: itemValue.name,
+      amount: itemValue.amount,
+      image: itemValue.image,
+      staus_flag: itemValue.status_flag,
+      enable_flag: isEnableFlag,
+      type_id: itemValue.type.id
+    };
+    console.log(data);
+
+    await axios({
+      method: 'put',
+      timeout: 1000 * 10,
+      url: apiUrl + server.EQUIPMENT_EDIT + itemValue.id,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    })
+      .then((res) => {
+        setItemValue(null);
+        setLoading(false);
+        getEquipment();
+        if (res.status == 200) {
+          setLoading(false);
+          setOpenDialog(true);
+          setErrorMessage(res.data.description);
+        } else {
+          setLoading(false);
+          setOpenErrorDialog(true);
+          setErrorMessage(res.data.description);
+        }
+      })
+      .catch((err) => {
+        setItemValue(null);
+        setLoading(false);
+        setOpenErrorDialog(true);
+        setErrorMessage(REQUEST_ERROR_TEXT);
       });
   };
 
@@ -176,6 +239,38 @@ function EquipmentManagementPage() {
       <Helmet>
         <title>Equipment - Management</title>
       </Helmet>
+      <ModalSuccess
+        open={openDialog}
+        handleClose={() => {
+          setItemValue(null);
+          setErrorMessage('');
+          setOpenDialog(false);
+        }}
+      />
+      <ModalError
+        description={errorMessage}
+        open={openErrorDialog}
+        handleClose={() => {
+          setItemValue(null);
+          setErrorMessage('');
+          setOpenErrorDialog(false);
+        }}
+      />
+      <ModalCustom
+        title={CONFIRM_DELETE_EQUIPMENT_TEXT}
+        description={CONTENT_CONFIRM_DELETE_EQUIPMENT_TEXT}
+        cancelButton={true}
+        confirmButton={true}
+        open={openCustom}
+        handleClose={() => {
+          setOpenCustom(false);
+        }}
+        handleConfirm={() => {
+          setOpenCustom(false);
+          setLoading(true);
+          editEquipment(false);
+        }}
+      />
       <PageTitleWrapper>
         <EquipmentPageHeader
           handleChange={debouncedResults}
@@ -306,6 +401,10 @@ function EquipmentManagementPage() {
                                     }}
                                     color="inherit"
                                     size="small"
+                                    onClick={() => {
+                                      setItemValue(item);
+                                      setOpenCustom(true);
+                                    }}
                                   >
                                     <DeleteTwoToneIcon fontSize="small" />
                                   </IconButton>
