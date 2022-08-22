@@ -1,7 +1,11 @@
 export const EQUIPMENT_MANAGEMENT = 'จัดการอุปกรณ์';
 export const EQUIPMENT_ADD = 'เพิ่มอุปกรณ์';
 export const EQUIPMENT_EDIT = 'แก้ไขอุปกรณ์';
+
+// Contract
 export const CONTRACT_MANAGEMENT = 'จัดการสัญญา';
+export const CONTRACT_ADD = 'เพิ่มข้อมูลสัญญา';
+export const CONTRACT_LIST_TITLE_TEXT = 'รายการสัญญา';
 
 // Footer
 export const FOOTER_LICENCE_TEXT = `2022 - TTM Application Admin Dashboard`;

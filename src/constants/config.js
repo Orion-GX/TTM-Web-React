@@ -16,4 +16,5 @@ export const server = {
   EQUIPMENT_EDIT: `/equipment/edit/`,
   EQUIPMENT_TYPE: `/equipment/type`,
   EQUIPMENT_IMAGE_UPLOAD: `/upload`,
+  CONTRACT_SEARCH: `/contract/search`,
 };
