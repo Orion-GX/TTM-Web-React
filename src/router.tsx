@@ -6,6 +6,7 @@ import SidebarLayout from 'src/layouts/SidebarLayout';
 import BaseLayout from 'src/layouts/BaseLayout';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
+import EditEquipment from './content/pages/Equipments/EditEquipment';
 
 const Loader = (Component) => (props) =>
   (
@@ -38,36 +39,28 @@ const UserSettings = Loader(
   lazy(() => import('src/content/applications/Users/settings'))
 );
 
+// Pages in app
 const ContractManagement = Loader(
-  lazy(() => import('src/content/pages/Components/Contracts'))
+  lazy(() => import('src/content/pages/Contracts'))
 );
 const EquipmentManagement = Loader(
-  lazy(() => import('src/content/pages/Components/Equipments'))
+  lazy(() => import('src/content/pages/Equipments'))
+);
+const AddEquipment = Loader(
+  lazy(() => import('src/content/pages/Equipments/AddEquipment'))
 );
 
 // Components
 
-const Buttons = Loader(
-  lazy(() => import('src/content/pages/Components/Buttons'))
-);
-const Modals = Loader(
-  lazy(() => import('src/content/pages/Components/Modals'))
-);
-const Accordions = Loader(
-  lazy(() => import('src/content/pages/Components/Accordions'))
-);
-const Tabs = Loader(lazy(() => import('src/content/pages/Components/Tabs')));
-const Badges = Loader(
-  lazy(() => import('src/content/pages/Components/Badges'))
-);
-const Tooltips = Loader(
-  lazy(() => import('src/content/pages/Components/Tooltips'))
-);
-const Avatars = Loader(
-  lazy(() => import('src/content/pages/Components/Avatars'))
-);
-const Cards = Loader(lazy(() => import('src/content/pages/Components/Cards')));
-const Forms = Loader(lazy(() => import('src/content/pages/Components/Forms')));
+const Buttons = Loader(lazy(() => import('src/components/Buttons')));
+const Modals = Loader(lazy(() => import('src/components/Modals')));
+const Accordions = Loader(lazy(() => import('src/components/Accordions')));
+const Tabs = Loader(lazy(() => import('src/components/Tabs')));
+const Badges = Loader(lazy(() => import('src/components/Badges')));
+const Tooltips = Loader(lazy(() => import('src/components/Tooltips')));
+const Avatars = Loader(lazy(() => import('src/components/Avatars')));
+const Cards = Loader(lazy(() => import('src/components/Cards')));
+const Forms = Loader(lazy(() => import('src/components/Forms')));
 
 // Status
 
@@ -153,7 +146,7 @@ const routes: RouteObject[] = [
       {
         path: '',
         element: <ContractManagement />
-      },
+      }
     ]
   },
   {
@@ -164,6 +157,14 @@ const routes: RouteObject[] = [
         path: '',
         element: <EquipmentManagement />
       },
+      {
+        path: 'add',
+        element: <AddEquipment />
+      },
+      {
+        path: 'edit',
+        element: <EditEquipment />
+      }
     ]
   },
   {

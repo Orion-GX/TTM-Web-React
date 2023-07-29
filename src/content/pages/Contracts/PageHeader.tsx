@@ -8,17 +8,15 @@ import {
 } from '@mui/material';
 
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
-import { EQUIPMENT_MANAGEMENT, SEARCH_TEXT } from 'src/constants';
+import { CONTRACT_ADD, CONTRACT_MANAGEMENT, EQUIPMENT_MANAGEMENT, SEARCH_TEXT } from 'src/constants';
+import { NavLink as RouterLink } from 'react-router-dom';
 
 interface EquipmentPageProps {
   handleChange: (params: any) => any;
+  onSearch?: () => any;
 }
 
-function EquipmentPageHeader({ handleChange }: EquipmentPageProps) {
-  const user = {
-    name: 'Catherine Pike',
-    avatar: '/static/images/avatars/1.jpg'
-  };
+function ContractPageHeader({ handleChange, onSearch }: EquipmentPageProps) {
 
   return (
     <Grid
@@ -29,7 +27,7 @@ function EquipmentPageHeader({ handleChange }: EquipmentPageProps) {
     >
       <Grid item xs={12} lg={12}>
         <Typography variant="h2" component="h2" gutterBottom>
-          {EQUIPMENT_MANAGEMENT}
+          {CONTRACT_MANAGEMENT}
         </Typography>
       </Grid>
       <Grid item xs={12} lg={12}>
@@ -52,15 +50,30 @@ function EquipmentPageHeader({ handleChange }: EquipmentPageProps) {
               />
             </Box>
           </Grid>
-          <Grid item xs={3} md={3} lg={3}>
+          <Grid item xs={2} md={2} lg={2}>
+            <Box style={{ paddingLeft: '10px', paddingRight: '10px' }}>
+              <Button
+                fullWidth
+                variant="contained"
+                color="success"
+                style={{ fontSize: '18px' }}
+                onClick={onSearch}
+              >
+                {SEARCH_TEXT}
+              </Button>
+            </Box>
+          </Grid>
+          <Grid item xs={3} md={3} lg={2}>
             <Button
               fullWidth
+              component={RouterLink}
+              to="/contract/add"
               sx={{ mt: { xs: 2, md: 0 } }}
               variant="contained"
               style={{ fontSize: '18px' }}
               startIcon={<AddTwoToneIcon fontSize="small" />}
             >
-              เพิ่มข้อมูลอุปกรณ์
+              {CONTRACT_ADD}
             </Button>
           </Grid>
         </Grid>
@@ -69,4 +82,4 @@ function EquipmentPageHeader({ handleChange }: EquipmentPageProps) {
   );
 }
 
-export default EquipmentPageHeader;
+export default ContractPageHeader;

@@ -13,7 +13,6 @@ import { styled } from '@mui/material/styles';
 import { useState } from 'react';
 import { TEXT_SYSTEM } from '../../constants/TextConstant';
 import { Link as RouterLink } from 'react-router-dom';
-import { COMFIRM_BUTTON_TEXT, FOOTER_CREATE_BY_TEXT, FOOTER_LICENCE_TEXT, PASSWORD_TEXT, SIGN_IN_TITLE_TEXT, USERNAME_TEXT } from 'src/constants';
 
 const SignInWrapper = styled(Box)(
   () => `
@@ -44,7 +43,7 @@ function SignIn() {
             alignItems="center"
             spacing={3}
           >
-            <h1>{SIGN_IN_TITLE_TEXT}</h1>
+            <h1>{TEXT_SYSTEM.SIGN_IN_TITLE_TEXT}</h1>
           </Grid>
           <Grid
             container
@@ -57,14 +56,14 @@ function SignIn() {
               <TextField
                 fullWidth
                 id="outlined-required"
-                label={USERNAME_TEXT}
+                label={TEXT_SYSTEM.USERNAME_TEXT}
               />
             </Grid>
             <Grid item xs={10} md={12} lg={12}>
               <TextField
                 fullWidth
                 id="outlined-password-input"
-                label={PASSWORD_TEXT}
+                label={TEXT_SYSTEM.PASSWORD_TEXT}
                 type="password"
               />
             </Grid>
@@ -76,7 +75,7 @@ function SignIn() {
                 variant="contained"
                 style={{ fontSize: '20px' }}
               >
-                {COMFIRM_BUTTON_TEXT}
+                {TEXT_SYSTEM.COMFIRM_BUTTON_TEXT}
               </Button>
             </Grid>
           </Grid>
@@ -115,12 +114,12 @@ const FooterSignIn = () => {
           >
             <Grid item xs={7} sm={6} md={6} lg={10}>
               <Typography align="left" variant="subtitle1">
-              &copy; {FOOTER_LICENCE_TEXT}
+                &copy; 2022 - TTM Application Admin Dashboard
               </Typography>
             </Grid>
             <Grid item xs={5} sm={6} md={6} lg={2}>
               <Typography align="right" variant="subtitle1">
-               {FOOTER_CREATE_BY_TEXT}
+                Create by Tang Tang marketing.
               </Typography>
             </Grid>
           </Grid>
